@@ -29,5 +29,9 @@ python3 manage.py startapp "$app_name"
 echo "=================================="
 echo "Project '$project_name' and App '$app_name' created successfully!"
 
+# Migrate for table creation
 python manage.py migrate
+
+# Create super user
+python manage.py createsuperuser
 clear
