@@ -28,3 +28,6 @@ python3 manage.py startapp "$app_name"
 
 echo "=================================="
 echo "Project '$project_name' and App '$app_name' created successfully!"
+
+python manage.py migrate
+clear
