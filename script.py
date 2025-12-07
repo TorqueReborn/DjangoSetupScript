@@ -9,6 +9,7 @@ def help():
     print("#-----------------------------------------------#")
     print("# Create project                                #")
     print("# python ./script.py <project_name>             #")
+    print("# python ./script.py <project_name> <app_name>  #")
     print("#                                               #")
     print("# Clean                                         #")
     print("# python ./script.py clean                      #")
