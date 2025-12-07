@@ -1,10 +1,16 @@
-
-"""
-Django Project Setup Script
-Usage: python .script.py <project_name> <app_name>
-"""
 import sys
+import shutil
 import subprocess
+from pathlib import Path
+
+def clean():
+    script = Path(__file__).name
+    for item in Path(".").iterdir():
+        if item.name not in [".venv", script]:
+            try:
+                shutil.rmtree(item) if item.is_dir() else item.unlink()
+            except:
+                print(f"Unable to remove {item}")
 
 def create_django_project(project_name):
     """ Create django project """
@@ -26,15 +32,16 @@ def main():
         print("#===============================================#")
         print("#              DJANGO SETUP SCRIPT              #")
         print("#-----------------------------------------------#")
-        print("# Usage: python create_django.py <project_name> #")
+        print("# Create project                                #")
+        print("# python ./script.py <project_name>            #")
+        print("#                                               #")
+        print("# Clean                                         #")
+        print("# python ./script.py clean                     #")
         print("#===============================================#")
         sys.exit(1)
     
-    project_name = sys.argv[1]
-    
-    # Create the project
-    create_django_project(project_name)
-
+    if sys.argv[1] == 'clean':
+        clean()
 
 if __name__ == '__main__':
     main()
