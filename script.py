@@ -17,7 +17,7 @@ def help():
 def clean():
     script = Path(__file__).name
     for item in Path(".").iterdir():
-        if item.name not in [".venv", script]:
+        if item.name not in [".venv", script] and item.suffix != ".code-workspace":
             try:
                 shutil.rmtree(item) if item.is_dir() else item.unlink()
             except:
@@ -27,13 +27,12 @@ def create_django_project(project_name):
     """ Create django project """
     try:
         # Run django-admin start-project
-        result = subprocess.run(
+        subprocess.run(
             f"django-admin startproject {project_name} .",
             shell=True,
             capture_output=True,
             text=True
         )
-        print(result)
     except Exception as e:
         print(f"✗ Unexpected error: {e}")
 
