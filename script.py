@@ -15,6 +15,7 @@ def help():
     print("#===============================================#")
 
 def clean():
+    """ Clean the directory excluding script, venv and workspace """
     script = Path(__file__).name
     for item in Path(".").iterdir():
         if item.name not in [".venv", script] and item.suffix != ".code-workspace":
@@ -26,7 +27,6 @@ def clean():
 def create_django_project(project_name):
     """ Create django project """
     try:
-        # Run django-admin start-project
         subprocess.run(
             f"django-admin startproject {project_name} .",
             shell=True,
@@ -39,7 +39,6 @@ def create_django_project(project_name):
 def create_django_app(app_name):
     """ Create django app """
     try:
-        # Run django-admin start-project
         subprocess.run(
             f"python manage.py startapp {app_name}",
             shell=True,
@@ -49,6 +48,20 @@ def create_django_app(app_name):
     except Exception as e:
         print(f"✗ Unexpected error: {e}")
 
+def install_app_in_settings(project_name, app_name):
+    """ app is installed inside INSTALLED_APPS of settings.py """
+    with open(f"{project_name}/settings.py", "r+") as f:
+        lines = f.readlines()
+
+        for i, line in enumerate(lines):
+            if "INSTALLED_APPS" in line:
+                close = next(j for j in range(i + 1, len(lines)) if "]" in lines[j])
+                lines.insert(close, f"\t'{app_name}',\n")
+                break
+        f.seek(0)
+        f.writelines(lines)
+        f.truncate()
+
 def main():
     # Check if project name is provided
     argLength = len(sys.argv)
@@ -56,15 +69,18 @@ def main():
         help()
         sys.exit(1)
     
+    project_name = sys.argv[1]
     match sys.argv[1]:
         case "clean":
             clean()
             sys.exit(1)
         case _:
-            create_django_project(sys.argv[1])
+            create_django_project(project_name)
     
     if argLength == 3:
-        create_django_app(sys.argv[2])
-
+        app_name = sys.argv[2]
+        create_django_app(app_name)
+        install_app_in_settings(project_name, app_name)
+    
 if __name__ == '__main__':
     main()
