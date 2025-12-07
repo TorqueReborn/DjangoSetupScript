@@ -3,6 +3,17 @@ import shutil
 import subprocess
 from pathlib import Path
 
+def help():
+    print("#===============================================#")
+    print("#              DJANGO SETUP SCRIPT              #")
+    print("#-----------------------------------------------#")
+    print("# Create project                                #")
+    print("# python ./script.py <project_name>             #")
+    print("#                                               #")
+    print("# Clean                                         #")
+    print("# python ./script.py clean                      #")
+    print("#===============================================#")
+
 def clean():
     script = Path(__file__).name
     for item in Path(".").iterdir():
@@ -17,7 +28,7 @@ def create_django_project(project_name):
     try:
         # Run django-admin start-project
         result = subprocess.run(
-            f"django-admin startproject {project_name}",
+            f"django-admin startproject {project_name} .",
             shell=True,
             capture_output=True,
             text=True
@@ -29,19 +40,14 @@ def create_django_project(project_name):
 def main():
     # Check if project name is provided
     if len(sys.argv) != 2:
-        print("#===============================================#")
-        print("#              DJANGO SETUP SCRIPT              #")
-        print("#-----------------------------------------------#")
-        print("# Create project                                #")
-        print("# python ./script.py <project_name>            #")
-        print("#                                               #")
-        print("# Clean                                         #")
-        print("# python ./script.py clean                     #")
-        print("#===============================================#")
+        help()
         sys.exit(1)
     
-    if sys.argv[1] == 'clean':
-        clean()
+    match sys.argv[1]:
+        case "clean":
+            clean()
+        case _:
+            create_django_project(sys.argv[1])
 
 if __name__ == '__main__':
     main()
