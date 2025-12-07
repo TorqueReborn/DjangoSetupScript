@@ -36,17 +36,35 @@ def create_django_project(project_name):
     except Exception as e:
         print(f"✗ Unexpected error: {e}")
 
+def create_django_app(app_name):
+    """ Create django app """
+    try:
+        # Run django-admin start-project
+        subprocess.run(
+            f"python manage.py startapp {app_name}",
+            shell=True,
+            capture_output=True,
+            text=True
+        )
+    except Exception as e:
+        print(f"✗ Unexpected error: {e}")
+
 def main():
     # Check if project name is provided
-    if len(sys.argv) != 2:
+    argLength = len(sys.argv)
+    if argLength < 2:
         help()
         sys.exit(1)
     
     match sys.argv[1]:
         case "clean":
             clean()
+            sys.exit(1)
         case _:
             create_django_project(sys.argv[1])
+    
+    if argLength == 3:
+        create_django_app(sys.argv[2])
 
 if __name__ == '__main__':
     main()
