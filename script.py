@@ -63,6 +63,24 @@ def install_app_in_settings(project_name, app_name):
         f.writelines(lines)
         f.truncate()
 
+def migration():
+    """ Create tables for django """
+    try:
+        subprocess.run(
+            f"python manage.py makemigrations",
+            shell=True,
+            capture_output=True,
+            text=True
+        )
+        subprocess.run(
+            f"python manage.py migrate",
+            shell=True,
+            capture_output=True,
+            text=True
+        )
+    except Exception as e:
+        print(f"✗ Unexpected error: {e}")
+
 def main():
     # Check if project name is provided
     argLength = len(sys.argv)
@@ -82,6 +100,8 @@ def main():
         app_name = sys.argv[2]
         create_django_app(app_name)
         install_app_in_settings(project_name, app_name)
+    
+    migration()
     
 if __name__ == '__main__':
     main()
