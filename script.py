@@ -1,4 +1,6 @@
+import os
 import sys
+import django
 import shutil
 import subprocess
 from pathlib import Path
@@ -81,6 +83,21 @@ def migration():
     except Exception as e:
         print(f"✗ Unexpected error: {e}")
 
+def create_super_user(project_name):
+    """ Create super user """
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"{project_name}.settings")
+    django.setup()
+
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+
+    username = "ghost"
+    password = "12345678"
+    email = "ghost@gmail.com"
+    
+    if not User.objects.filter(username=username).exists():
+        User.objects.create_superuser(username=username, email=email, password=password)
+
 def main():
     # Check if project name is provided
     argLength = len(sys.argv)
@@ -102,6 +119,7 @@ def main():
         install_app_in_settings(project_name, app_name)
     
     migration()
+    create_super_user(project_name)
     
 if __name__ == '__main__':
     main()
